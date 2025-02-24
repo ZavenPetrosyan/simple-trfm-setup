@@ -1,0 +1,37 @@
+version: "3.7"
+
+services:
+  nestjs:
+    build:
+      context: .
+      target: ${NODE_ENV}
+    volumes:
+      - .:/app
+    ports:
+      - "3005:3005"
+      - "9229:9229"
+    env_file:
+      - .env
+    networks:
+      - moba_backend
+    restart: always
+
+  moba_db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - moba_backend
+
+volumes:
+  dbdata:
+
+networks:
+  moba_backend:
+    driver: bridge
